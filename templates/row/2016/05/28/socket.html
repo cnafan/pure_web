@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <meta charset="utf8mb4" />
+    <meta name="generator" content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
+    <title>强哥的小窝</title>
+    <link rel="stylesheet" href="../../../../static/css/pure-min.css" />
+    <link rel="stylesheet" href="../../../../static/css/base.css" />
+    <meta name="keywords" content="Python" />
+    <meta name="generator" content="Typecho 1.0/14.10.10" />
+    <meta name="template" content="material" />
+    <link rel="pingback" href="http://www.qianggege.cn" />
+    <link rel="stylesheet" type="text/css" href="../../../../static/css/pre.css">
+    <link rel="stylesheet" href="../../../../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/material.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/ripples.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/roboto.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/customs.css" />
+    <link rel="shortcut icon" href="../../../..//static/picture/favicon.ico" />
+    <link rel="bookmark" href="../../../../static/picture/favicon.ico" type="image/x-icon" 　/>
+</head>
+
+<body>
+    <script type="text/javascript" left="80%" bottom="20%" text="返回顶部" src="static/css/xreturntop/x-return-top.min.js"></script>
+    <header>
+        <div class="navbar navbar-fixed-top navbar-inverse" style="box-shadow:0px 3px 30px #002;-moz-box-shadow:0px 3px 30px #002;-webkit-box-shadow:0px 3px 30px #002;">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                    </button>
+                    <a class="navbar-brand" id="logo" href="http://www.qianggege.cn/home">强哥的小窝</a></div>
+                <div class="navbar-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="http://www.qianggege.cn/home">首页</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/feihua" title="废话">废话</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/about" title="关于">关于</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="post-title"><a href="">socket</a></h3>
+                        <div class="post-meta">
+                            <span>作者：<a href="http://www.qianggege.cn/about" >qiang</a> | </span>
+                            <!-- <span>作者：<a href="http://xlzd.me/author/1/">xlzd</a> | </span> -->
+                            <span>时间：2016-05-29 10:04:00 | </span>
+                            <span>分类： | </span>
+                            <span>评论：<a href="http://www.qianggege.cn/about">0 评论</a> </span>
+                        </div>
+                        <div class="post-content">
+                            <hr/>
+                            <p>最近尝试了下socket编程，主要练习socket的原理
+                                <br/>目前实现了多个客户端可以和服务器之间的通信，服务器端是用python写，客户端是用android做的。
+                                <br/> 在服务器端使用多线程来保持与每个客户端的通信。
+                            </p>
+                            <p>先看一下服务器端的代码：</p>
+                            <pre class="prettyprint">
+                            <span class="pln">
+            def connect(client, address):
+              try:
+              #设置超时时间
+                client.settimeout(500)
+              #接收数据的大小
+                
+                buf = client.recv(2048)
+                print(buf)
+                buf=buf.decode('utf-8')
+                print(buf)
+                senddata=str(GetNowTime()+'：'+address[0] +' , '+ buf+' 已收到').encode('utf-8')
+               
+              #将接收到的信息原样的返回到客户端中
+                client.send(senddata)
+              #超时后显示退出
+              except socket.timeout:
+                print ('time out')
+              #关闭与客户端的连接
+              client.close()
+              
+            def main():
+              #创建socket对象。调用socket构造函数
+              #AF_INET为ip地址族，SOCK_STREAM为流套接字
+              sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+              #将socket绑定到指定地址，第一个参数为ip地址，第二个参数为端口号
+              sock.bind((myHost, myPort))  
+              #设置最多连接数量
+              sock.listen(5) 
+              while True:  
+              #服务器套接字通过socket的accept方法等待客户请求一个连接
+                print ('I am listenning')
+                client,address = sock.accept()
+                print ("Connected By:"+str(address))
+                thread = threading.Thread(target=connect, args=(client, address))
+                thread.start()</span>
+                            </pre>
+                            <p><br/>
+                                客户端的下载地址：
+                                <a href="../../../../static/res/socket_client.apk">下载链接</a>
+                            </p>
+                             <p>客户端已上传到github：
+                                <a href="https://github.com/sikuquanshu123/Socket_one">github</a>
+                            </p>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="pull-left copyright">Copyright &copy; 2016&nbsp;&nbsp;<a href='/'>强哥的小窝</a></div>
+                <ul class="footer-nav pull-right">
+                    <li><a href="https://www.zhihu.com/people/xiao-xiao-qiang-3" target="_blank" class="icon-zhihu" title="知乎">知乎</a></li>
+                    <li><a href="http://weibo.com/2502029140" target="_blank" class="icon-weibo" title="微博">微博</a></li>
+                    <li><a href="https://github.com/sikuquanshu123" target="_blank" class="icon-github" title="Github">Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

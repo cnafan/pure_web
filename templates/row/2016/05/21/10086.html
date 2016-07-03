@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <meta charset="utf8mb4" />
+    <meta name="generator" content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
+    <title>强哥的小窝</title>
+    <link rel="stylesheet" href="../../../../static/css/pure-min.css" />
+    <link rel="stylesheet" href="../../../../static/css/base.css" />
+    <meta name="keywords" content="Android" />
+    <meta name="generator" content="Typecho 1.0/14.10.10" />
+    <meta name="template" content="material" />
+    <link rel="pingback" href="http://www.qianggege.cn" />
+    <link rel="stylesheet" type="text/css" href="../../../../static/css/pre.css">
+    <link rel="stylesheet" href="../../../../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/material.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/ripples.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/roboto.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/customs.css" />
+    <link rel="shortcut icon" href="../../../..//static/picture/favicon.ico" />
+    <link rel="bookmark" href="../../../../static/picture/favicon.ico" type="image/x-icon" 　/>
+</head>
+
+<body>
+
+    <script type="text/javascript" left="80%" bottom="20%" text="返回顶部" src="../../../../static/css/xreturntop/x-return-top.min.js"></script>
+    
+    <header>
+        <div class="navbar navbar-fixed-top navbar-inverse" style="box-shadow:0px 3px 30px #002;-moz-box-shadow:0px 3px 30px #002;-webkit-box-shadow:0px 3px 30px #002;">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                    </button>
+                    <a class="navbar-brand" id="logo" href="http://www.qianggege.cn/home">强哥的小窝</a></div>
+                <div class="navbar-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="http://www.qianggege.cn/home">首页</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/feihua" title="废话">废话</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/about" title="关于">关于</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="post-title"><a href="">10086流量统计</a></h3>
+                        <div class="post-meta">
+                            <span>作者：<a href="http://www.qianggege.cn/about" target="_blank">qiang</a> | </span>
+                            <!-- <span>作者：<a href="http://xlzd.me/author/1/">xlzd</a> | </span> -->
+                            <span>时间：2016-05-21 13:35:00 | </span>
+                            <span>分类： | </span>
+                            <span>评论：<a href="http://www.qianggege.cn/about">0 评论</a> </span>
+                        </div>
+                        <div class="post-content">
+                            <hr/>
+                            <h2></h2>
+                            <p>由于女票手机是android4.4，翻遍酷市场也没有一个满足需求的成品，于是小手一动、脑袋一热决定自己丰衣足食。
+                            </p>
+                            <p>主要的需求有三点：
+                            </p>
+                            <p>(1)实现本月剩余流量、总流量以及剩余话费的查询
+                                <br/>(2)实现每日消耗流量的统计
+                            </p>
+                            <p>&nbsp&nbsp&nbsp&nbsp ok，要实现第一点的思路是给10086发短信，然后利用正则表达式提取回执短信中所需要的信息。这里发短信是调用系统api--smsmanage，然后设一个广播接收器，在接受器中实现正则的读取，然后通过接口的调用，实现数据的更新。
+                                <br/>
+                                <pre class="prettyprint">
+                            <span class="pln">
+        public void onReceive(Context context, Intent intent) {
+        Log.d("qiang","短信收到");
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            Object[] objArray = (Object[]) bundle.get("pdus");
+            SmsMessage[] messages = new SmsMessage[objArray.length];
+            for (int i = 0; i < objArray.length; i++) {
+                messages[i] = SmsMessage.createFromPdu((byte[]) objArray[i]);
+            }
+            String phoneNum = "";//电话号码
+            StringBuilder sb = new StringBuilder();//短信内容
+
+            for (SmsMessage currentMessage : messages) {
+                phoneNum = currentMessage.getDisplayOriginatingAddress();
+                sb.append(currentMessage.getDisplayMessageBody());
+            }
+            if (phoneNum.equals("10086")) {
+                Toast.makeText(context, "接受成功!", Toast.LENGTH_SHORT)
+                        .show();
+                //Toast.makeText(context, sb, Toast.LENGTH_LONG).show();
+                Log.d("qiang", sb.toString());
+                
+                String[] fin = re_10086.calculate(sb.toString());
+
+                interaction.setTexts(context,fin[0],fin[1],fin[2],fin[3],fin[4]);
+                return;
+            } else {
+                //Toast.makeText(context, sb, Toast.LENGTH_LONG).show();
+                //System.out.println("发送人：" + phoneNum + "  短信内容：" + sb.toString());
+                return;
+            }
+        }
+        context.unregisterReceiver(this);
+        return;
+    }</span></pre>
+                            </p>
+                            <p>&nbsp&nbsp&nbsp&nbsp 第二点是用到了android的traficstats类中的getmobilerxbytes()读取手机流量信息，对了，这个类是统计此设备自从开机以来产生的数据，所以在每次关机之前都需要将数据保存下来。在这里遇到了一些问题，这个类在android 5以上的系统中，如果数据开关处于关闭状态时，读取的数据为0，当开关打开时，读取数据恢复正常。
+                            </p>
+                            <p>&nbsp&nbsp&nbsp&nbsp 此外，还需要实现数据的定时刷新，每隔5分钟和每隔24小时，每隔5分钟是读取数据库数据，更新每天使用的流量，然后发送新的通知。每隔24小时是发送短信查询流量信息，然后发送新的通知。过程是先设置一个alarmmanager，时间到了就唤醒更新数据的服务，更新完了之后再设置下一个alarm，最后自杀掉服务。
+                            </p>
+                            <pre class="prettyprint">
+                            <span class="pln">
+        //0点定时器
+        public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("qiang", "start2_service");
+
+        Intent intent1 = new Intent(this, AlarmReceiver2.class); //触发广播，广播回调此方法，实现循环
+        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        long firstTime = SystemClock.elapsedRealtime();    // 开机之后到现在的运行时间(包括睡眠时间)
+        long systemTime = System.currentTimeMillis();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+// 这里时区需要设置一下，不然会有8个小时的时间差
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        calendar.set(Calendar.MINUTE,30);
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+// 选择的定时时间
+        long selectTime = calendar.getTimeInMillis();
+// 如果当前时间大于设置的时间，那么就从第二天的设定时间开始
+        if (systemTime > selectTime) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            selectTime = calendar.getTimeInMillis();
+        }
+// 计算现在时间到设定时间的时间差
+        long time = selectTime - systemTime;
+        firstTime += time;
+        Log.d("qiang", "时间差：" + time);
+// 进行闹铃注册
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                firstTime, time, pendingIntent2);
+
+        Log.d("qiang", "定时广播已发");
+
+        stopSelf();
+        Log.d("qiang", "start2_service已关闭");
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+        </span></pre>
+                            <p>代码已经上传到github:
+                            </p>
+                            <br/>
+                            <p>apk下载地址：<a href="../../../../static/res/10086.apk">下载链接</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="pull-left copyright">Copyright &copy; 2016&nbsp;&nbsp;<a href='/'>强哥的小窝</a></div>
+                <ul class="footer-nav pull-right">
+                    <li><a href="https://www.zhihu.com/people/xiao-xiao-qiang-3" target="_blank" class="icon-zhihu" title="知乎">知乎</a></li>
+                    <li><a href="http://weibo.com/2502029140" target="_blank" class="icon-weibo" title="微博">微博</a></li>
+                    <li><a href="https://github.com/sikuquanshu123" target="_blank" class="icon-github" title="Github">Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

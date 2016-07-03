@@ -1,0 +1,5 @@
+&lt;IfModule mod_rewrite.c&gt;
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} /generate_204$
+  RewriteRule $ / [R=204]
+&lt;/IfModule&gt;
