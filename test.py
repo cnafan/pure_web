@@ -78,5 +78,9 @@ def androidFile():
 def shixun():
     return render_template('/row/2016/06/27/shixun.html')
 
+@app.route("/row/2016/07/09/mywebsite")
+def mywebsite():
+    return render_template('/row/2016/07/09/mywebsite.html')
+
 if __name__ == "__main__":
     app.run()
