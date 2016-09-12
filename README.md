@@ -1,6 +1,5 @@
 # pure_web
 
-my website
----
+my website：
 www.qianggege.cn
 渣渣代码，求指导
