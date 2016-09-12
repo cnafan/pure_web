@@ -82,5 +82,17 @@ def shixun():
 def mywebsite():
     return render_template('/row/2016/07/09/mywebsite.html')
 
+@app.route("/row/2016/08/24/sdutinfo")
+def sdutinfo():
+    return render_template('/row/2016/08/24/sdutinfo.html')
+
+@app.route("/row/2016/09/13/facerecognition")
+def facerecognition():
+    return render_template('/row/2016/09/13/FaceRecognition.html')
+
+@app.route("/webscan_360_cn.html")
+def webscan_360_cn():
+    return render_template('webscan_360_cn.html')
+sdutinfo
 if __name__ == "__main__":
     app.run()
