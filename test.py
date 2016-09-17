@@ -90,6 +90,10 @@ def sdutinfo():
 def facerecognition():
     return render_template('/row/2016/09/13/FaceRecognition.html')
 
+@app.route("/row/2016/09/14/androidn")
+def androidn():
+    return render_template('/row/2016/09/14/androidN.html')
+
 @app.route("/webscan_360_cn.html")
 def webscan_360_cn():
     return render_template('webscan_360_cn.html')

@@ -21,7 +21,7 @@ body>.container {
     margin-top: 20px;
     margin-bottom: 60px
 }
-
+/*
 footer {
     position: fixed;
     margin: 0;
@@ -31,6 +31,14 @@ footer {
     z-index: 5;
     height: 45px;
     box-shadow: 0 0 10px #202020
+}
+*/
+footer{
+    position: relative;
+    margin-top: -45px;
+    height: 45px;
+    clear:both; 
+    background: black;
 }
 
 #main {
