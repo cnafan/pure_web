@@ -50,9 +50,9 @@ def read_more():
 def about():
     return render_template('about.html')
 
-@app.route("/love")
-def love():
-    return render_template('/row/love/520.html')
+@app.route("/zw")
+def zw():
+    return render_template('/row/love/zw.html')
 
 @app.route("/row/2016/04/27/test")
 def test():

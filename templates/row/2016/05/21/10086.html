@@ -53,7 +53,7 @@
             <div class="col-md-9">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h3 class="post-title"><a href="">10086流量统计</a></h3>
+                        <h3 class="post-title"><a href="">AndroidFlowStatistics</a></h3>
                         <div class="post-meta">
                             <span>作者：<a href="http://www.qianggege.cn/about" target="_blank">qiang</a> | </span>
                             <!-- <span>作者：<a href="http://xlzd.me/author/1/">xlzd</a> | </span> -->
@@ -68,99 +68,108 @@
                             </p>
                             <p>主要的需求有三点：
                             </p>
-                            <p>(1)实现本月剩余流量、总流量以及剩余话费的查询
+                            <p>(1)实现本月剩余流量的查询
                                 <br/>(2)实现每日消耗流量的统计
                             </p>
                             <p>&nbsp&nbsp&nbsp&nbsp ok，要实现第一点的思路是给10086发短信，然后利用正则表达式提取回执短信中所需要的信息。这里发短信是调用系统api--smsmanage，然后设一个广播接收器，在接受器中实现正则的读取，然后通过接口的调用，实现数据的更新。
                                 <br/>
                                 <pre class="prettyprint">
                             <span class="pln">
-        public void onReceive(Context context, Intent intent) {
-        Log.d("qiang","短信收到");
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            Object[] objArray = (Object[]) bundle.get("pdus");
-            SmsMessage[] messages = new SmsMessage[objArray.length];
-            for (int i = 0; i < objArray.length; i++) {
-                messages[i] = SmsMessage.createFromPdu((byte[]) objArray[i]);
-            }
-            String phoneNum = "";//电话号码
-            StringBuilder sb = new StringBuilder();//短信内容
+    
+    private DecimalFormat df = new DecimalFormat("#.##");
+    //尊敬的客户，您好！截至09月23日16时，您本帐单月使用的"赠送1.5G省内通用流量，48个月"套餐移动数据流量共有1536.00M，剩余流量还有1358.83M; "0元50M省内流量包"套餐移动数据流量共有50.00M，剩余流量还有50.00M; "赠送10M省内流量"套餐移动数据流量共有10.00M，剩余流量还有10.00M; "18元包来电显示+100M国内流量，超出0.29元/M"套餐移动数据流量共有100.00M，剩余流量还有100.00M; 普通GPRS"10元包1G省内通用流量"套餐移动数据流量共有1024.00M，剩余流量还有1024.00M; "0元包6GB咪咕省内定向流量，有效期12个月"套餐移动数据流量共有6144.00M，剩余流量还有6144.00M; 仅供参考，具体以月结账单为准。
+    private String[] reg = {
+            "(?<=剩余流量还有)\\d+\\.\\d\\d",
+            "(?<=流量共有)\\d+\\.\\d\\d"
+    };
 
-            for (SmsMessage currentMessage : messages) {
-                phoneNum = currentMessage.getDisplayOriginatingAddress();
-                sb.append(currentMessage.getDisplayMessageBody());
-            }
-            if (phoneNum.equals("10086")) {
-                Toast.makeText(context, "接受成功!", Toast.LENGTH_SHORT)
-                        .show();
-                //Toast.makeText(context, sb, Toast.LENGTH_LONG).show();
-                Log.d("qiang", sb.toString());
-                
-                String[] fin = re_10086.calculate(sb.toString());
+    private String deal(Context context, String data, String reg) {
 
-                interaction.setTexts(context,fin[0],fin[1],fin[2],fin[3],fin[4]);
-                return;
-            } else {
-                //Toast.makeText(context, sb, Toast.LENGTH_LONG).show();
-                //System.out.println("发送人：" + phoneNum + "  短信内容：" + sb.toString());
-                return;
-            }
+        SharedPreferences pref = getDefaultSharedPreferences(context);
+        Double check = Double.valueOf(pref.getString("check", "0"));
+
+        Double return_data = 0.0;
+        Pattern reg_data = Pattern.compile(reg);
+        Matcher matcher = reg_data.matcher(data);
+        while (matcher.find()) {
+            return_data += Double.valueOf(matcher.group());
         }
-        context.unregisterReceiver(this);
-        return;
+
+        Log.d("qiang", "remain_liuliang_before =" + return_data);
+        return_data -= check;
+
+        Log.d("qiang", "remain_liuliang_after=" + return_data);
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        if (return_data > 1024.0 && return_data / 1024.0 > 0) {
+            return df.format(return_data / 1024.0) + "G";
+        }
+        else if(return_data < 1024.0 && return_data  > 1){
+            return df.format(return_data) + "M";
+        }
+        else {
+            return df.format(return_data*1024.0) + "k";
+        }
+    }
+
+    String[] calculate(Context context, String data) {
+        String[] remain = new String[2];
+
+        for (int t = 0; t < remain.length; t++) {
+            remain[t] = deal(context, data, reg[t]);
+        }
+        Log.d("qiang", "remain_liuliang =" + remain[0]);
+        Log.d("qiang", "all_liuliang =" + remain[1]);
+
+        return remain;
+    }
     }</span></pre>
                             </p>
-                            <p>&nbsp&nbsp&nbsp&nbsp 第二点是用到了android的traficstats类中的getmobilerxbytes()读取手机流量信息，对了，这个类是统计此设备自从开机以来产生的数据，所以在每次关机之前都需要将数据保存下来。在这里遇到了一些问题，这个类在android 5以上的系统中，如果数据开关处于关闭状态时，读取的数据为0，当开关打开时，读取数据恢复正常。
+                            <p>&nbsp&nbsp&nbsp&nbsp 第二点是用到了android的traficstats类中的getmobilerxbytes()读取手机流量信息，对了，这个类是统计此设备自从开机以来产生的数据，所以在每次关机之前都需要将数据保存下来。在这里遇到了一些问题，这个类在android 5以上的系统中，如果数据开关处于关闭状态时，读取的数据为0，当开关打开时，读取数据恢复正常。所以设置一个网络连接改变的广播，只在数据处于活动时启动服务。
                             </p>
-                            <p>&nbsp&nbsp&nbsp&nbsp 此外，还需要实现数据的定时刷新，每隔5分钟和每隔24小时，每隔5分钟是读取数据库数据，更新每天使用的流量，然后发送新的通知。每隔24小时是发送短信查询流量信息，然后发送新的通知。过程是先设置一个alarmmanager，时间到了就唤醒更新数据的服务，更新完了之后再设置下一个alarm，最后自杀掉服务。
+                            <p>&nbsp&nbsp&nbsp&nbsp 此外，还需要实现数据的定时刷新，每隔3分钟和每隔24小时，每隔3分钟是读取数据库数据，更新每天使用的流量，然后发送新的通知。每隔24小时是发送短信查询流量信息，然后发送新的通知。过程是先设置一个alarmmanager，时间到了就唤醒更新数据的服务，更新完了之后再设置下一个alarm，最后自杀掉服务。所以该应用的后台是不会有任何服务长期滞留在内存中。
                             </p>
                             <pre class="prettyprint">
                             <span class="pln">
         //0点定时器
-        public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("qiang", "start2_service");
 
-        Intent intent1 = new Intent(this, AlarmReceiver2.class); //触发广播，广播回调此方法，实现循环
+        Intent intent1 = new Intent(this, AlarmReceiverManual.class); //触发广播，广播回调此方法，实现循环
         PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         long firstTime = SystemClock.elapsedRealtime();    // 开机之后到现在的运行时间(包括睡眠时间)
         long systemTime = System.currentTimeMillis();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-// 这里时区需要设置一下，不然会有8个小时的时间差
+        // 这里时区需要设置一下，不然会有8个小时的时间差
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        calendar.set(Calendar.MINUTE,30);
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-// 选择的定时时间
+        // 选择的定时时间
         long selectTime = calendar.getTimeInMillis();
-// 如果当前时间大于设置的时间，那么就从第二天的设定时间开始
+        // 如果当前时间大于设置的时间，那么就从第二天的设定时间开始
         if (systemTime > selectTime) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
             selectTime = calendar.getTimeInMillis();
         }
-// 计算现在时间到设定时间的时间差
+        // 计算现在时间到设定时间的时间差
         long time = selectTime - systemTime;
         firstTime += time;
         Log.d("qiang", "时间差：" + time);
-// 进行闹铃注册
+        // 进行闹铃注册
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 firstTime, time, pendingIntent2);
-
-        Log.d("qiang", "定时广播已发");
+        Log.d("qiang", "0点广播已发");
 
         stopSelf();
-        Log.d("qiang", "start2_service已关闭");
+        Log.d("qiang", "AlarmManualStart已关闭");
 
-        return super.onStartCommand(intent, flags, startId);
-    }
-        </span></pre>
-                            <p>代码已经上传到github:
+           </span></pre>
+           <br/>
+                            <p>代码已经上传到github:<a href="https://github.com/sikuquanshu123/AndroidFlowStatistics">链接</a>
                             </p>
-                            <br/>
                             <p>apk下载地址：<a href="../../../../static/res/10086.apk">下载链接</a>
                             </p>
                         </div>
