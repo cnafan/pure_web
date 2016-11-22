@@ -2,10 +2,6 @@ from flask import Flask, request,render_template,redirect, url_for, abort, sessi
 from flask.ext.admin import Admin, BaseView, expose
 app = Flask(__name__)
 
-@app.route("/generate_204")
-def generate_204():
-    return render_template("204.html")
-
 @app.route("/")
 def welcome():
     return render_template('welcome.html')
@@ -97,6 +93,12 @@ def androidn():
 @app.route("/webscan_360_cn.html")
 def webscan_360_cn():
     return render_template('webscan_360_cn.html')
-sdutinfo
+
+"""
+@app.route("/generate_204")
+def generate_204():
+    return render_template("204.html")
+"""
+
 if __name__ == "__main__":
     app.run()
