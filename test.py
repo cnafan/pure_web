@@ -90,6 +90,10 @@ def facerecognition():
 def androidn():
     return render_template('/row/2016/09/14/androidN.html')
 
+@app.route("/row/2017/01/17/recyclerview")
+def recyclerview():
+    return render_template('/row/2017/01/17/RecyclerView.html')
+
 @app.route("/webscan_360_cn.html")
 def webscan_360_cn():
     return render_template('webscan_360_cn.html')
