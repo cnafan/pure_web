@@ -94,6 +94,10 @@ def androidn():
 def recyclerview():
     return render_template('/row/2017/01/17/RecyclerView.html')
 
+@app.route("/row/2017/01/24/raspberry")
+def raspberry():
+    return render_template('/row/2017/01/24/raspberry.html')
+
 @app.route("/webscan_360_cn.html")
 def webscan_360_cn():
     return render_template('webscan_360_cn.html')
