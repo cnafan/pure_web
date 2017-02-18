@@ -2,21 +2,18 @@
 
 <head>
     <meta charset="utf8mb4" />
-    <meta name="generator" content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
     <title>强哥的小窝</title>
-    <link rel="stylesheet" href="../../../../static/css/pure-min.css" />
-    <link rel="stylesheet" href="../../../../static/css/base.css" />
-    <meta name="keywords" content="Python" />
-    <meta name="generator" content="Typecho 1.0/14.10.10" />
+    <meta name="keywords" content="blog" />
     <meta name="template" content="material" />
     <link rel="pingback" href="http://www.qianggege.cn" />
-    <link rel="stylesheet" type="text/css" href="../../../../static/css/pre.css">
+    <link rel="stylesheet" href="../../../../static/css/pure-min.css" />
+    <link rel="stylesheet" href="../../../../static/css/base.css" />
     <link rel="stylesheet" href="../../../../static/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../../../../static/css/material.min.css" />
     <link rel="stylesheet" href="../../../../static/css/ripples.min.css" />
     <link rel="stylesheet" href="../../../../static/css/roboto.min.css" />
     <link rel="stylesheet" href="../../../../static/css/customs.css" />
-    <link rel="shortcut icon" href="../../../..//static/picture/favicon.ico" />
+    <link rel="shortcut icon" href="../../../../static/picture/favicon.ico" />
     <link rel="bookmark" href="../../../../static/picture/favicon.ico" type="image/x-icon" 　/>
 </head>
 
@@ -83,11 +80,11 @@
 
                             <img src="../../../../static/picture/raspberry_4.jpg" style="height: 350px;width: 450px;">
                             	<p>
-                            		将镜像下载下来之后，使用官方推荐的Win32DiskImager <a href="../../../../static/res/Win32DiskImager-0.9.5-install.exe">（下载链接）</a> 刻到sd卡。然后插上电源等待开机。接下来，找到一根网线，连接到路由器，从路由器的管理界面获取到pi的ip。
+                            		将镜像下载下来之后，使用官方推荐的Win32DiskImager <a href="http://download.csdn.net/detail/sikuquanshu123/9757413">（下载链接）</a> 刻到sd卡。然后插上电源等待开机。接下来，找到一根网线，连接到路由器，从路由器的管理界面获取到pi的ip。
                             	</p>
 
                             	<p>
-                            		接着打开PuTTY<a href="../../../../static/res/putty-0.67-installer.msi">（下载链接）</a> ，输入ip，端口填22，选ssh，确认进入。（对了，新版jessie是默认关闭ssh的，所以如果连接不上pi，那么拔掉电源，给pi的sd卡上新建一个名为SSH没有后缀的文件）。
+                            		接着打开PuTTY<a href="http://download.csdn.net/detail/sikuquanshu123/9757414">（下载链接）</a> ，输入ip，端口填22，选ssh，确认进入。（对了，新版jessie是默认关闭ssh的，所以如果连接不上pi，那么拔掉电源，给pi的sd卡上新建一个名为SSH没有后缀的文件）。
                             	</p>
                             	<p>
                             		ok,连接上以后树莓派的默认用户名是pi，密码是raspberry。登录上以后，首先我们得先更改软件源，官方的源慢的跟蜗牛一样。
@@ -122,7 +119,7 @@ network={
 sudo reboot
                              </span></pre> 
 
-                             <p>连接好wifi之后呢，我们只要装上xrdp就可以正儿八经的调戏，不对 是调试树莓派了</p> 
+                             <p>连接好wifi之后呢，我们只要装上xrdp可以更好地调戏，啊呸，调试树莓派。</p> 
                              <pre class="prettyprint"><span class="pln">
 sudo apt-get install xrdp
 sudo apt-get install vnc4server tightvncserver

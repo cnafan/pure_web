@@ -45,11 +45,11 @@ def read_more():
 @app.route("/about")
 def about():
     return render_template('about.html')
-
-@app.route("/zw")
-def zw():
-    return render_template('/row/love/zw.html')
-
+"""
+@app.route("/qian_love")
+def qian_love():
+    return render_template('/row/love/qianer.html')
+"""
 @app.route("/row/2016/04/27/test")
 def test():
     return render_template('/row/2016/04/27/test.html')
@@ -98,9 +98,9 @@ def recyclerview():
 def raspberry():
     return render_template('/row/2017/01/24/raspberry.html')
 
-@app.route("/webscan_360_cn.html")
-def webscan_360_cn():
-    return render_template('webscan_360_cn.html')
+@app.route("/row/2017/02/14/qian")
+def qian():
+    return render_template('/row/2017/02/14/qian.html')
 
 """
 @app.route("/generate_204")
