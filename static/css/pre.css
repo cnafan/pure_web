@@ -12,7 +12,7 @@ pre .atv{color:#ffa0a0;}
 pre .dec{color:#98fb98;}
 
 pre.prettyprint{
-	display:block;background-color:#333;
+	display:block;background-color:#3B3B3B;
 	font-size:12px;line-height:16px;margin:6px 0px;padding:2px 7px;word-wrap:normal;overflow:auto;width:98%;
 }
 ol.linenums li{line-height:16px;margin:0px;padding:0px;list-style:none;}

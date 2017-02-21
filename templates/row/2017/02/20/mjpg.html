@@ -1,0 +1,148 @@
+<html>
+
+<head>
+    <meta charset="utf8mb4" />
+    <title>强哥的小窝</title>
+    <meta name="keywords" content="blog" />
+    <meta name="template" content="material" />
+    <link rel="pingback" href="http://www.qianggege.cn" />
+    <link rel="stylesheet" href="../../../../static/css/pre.css" />
+    <link rel="stylesheet" href="../../../../static/css/pure-min.css" />
+    <link rel="stylesheet" href="../../../../static/css/base.css" />
+    <link rel="stylesheet" href="../../../../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/material.min.css" />
+    <link rel="stylesheet" href="../../../../static/css/ripples.min.css" />
+    <!--<link rel="stylesheet" href="../../../../static/css/roboto.min.css" />-->
+    <link rel="stylesheet" href="../../../../static/css/customs.css" />
+    <link rel="shortcut icon" href="../../../../static/picture/favicon.ico" />
+    <link rel="bookmark" href="../../../../static/picture/favicon.ico" type="image/x-icon" 　/>
+</head>
+
+<body>
+    <script type="text/javascript" left="80%" bottom="20%" text="返回顶部" src="../../../../static/css/xreturntop/x-return-top.min.js"></script>
+    <header>
+        <div class="navbar navbar-fixed-top navbar-inverse" style="box-shadow:0px 3px 30px #002;-moz-box-shadow:0px 3px 30px #002;-webkit-box-shadow:0px 3px 30px #002;">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                    </button>
+                    <a class="navbar-brand" id="logo" href="http://www.qianggege.cn/home">强哥的小窝</a></div>
+                <div class="navbar-collapse collapse navbar-responsive-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="http://www.qianggege.cn/home">首页</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/feihua" title="废话">废话</a>
+                        </li>
+                        <li>
+                            <a href="http://www.qianggege.cn/about" title="关于">关于</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="post-title"><a href="">树莓派3摄像头试用mjpg</a></h3>
+                        <div class="post-meta">
+                            <span>作者：<a href="http://www.qianggege.cn/about" >qiang</a> | </span>
+                            <span>时间：2017-02-20 22:16:00 | </span>
+                            <span>分类： | </span>
+                            <span>评论：<a href="http://www.qianggege.cn/about">0 评论</a> </span>
+                        </div>
+                        <div class="post-content">
+                            <hr/>
+                            <p>
+                                之前一篇记录了树莓派3的上手，这次呢主要是上手树莓派官方摄像头。其实是看到贴吧中某大婶的指南，试验后发现效果惊人，遂记录。
+                            </p>
+                            <p>
+                                首先呢，我们先安装树莓派的摄像头，将黑色的卡条轻轻提上来，把摄像头插进去，之后将卡条摁下去。接着我们开机，SSH登录上以后，输入raspi-config，选择第5个enable camera，接着输入reboot重启派。
+                            </p>
+                            <img src="../../../../static/picture/mjpg_1.jpg" style="height: 350px;width: 450px;">
+                            <p>
+                                等重启完了以后，接下就正式开启新世界的大门。
+                                <br>第一步：下载资源
+                                <pre class="prettyprint"><span class="pln">                             
+                            wget https://github.com/jacksonliam/mjpg-streamer/archive/master.zip
+                             </span></pre>
+                                <br>第二步：安装辅助工具
+                                <pre class="prettyprint"><span class="pln">
+                            apt-get install libjpeg8-dev
+                            apt-get install cmake
+                             </span></pre>
+                                <br>第三步：解压资源
+                                <pre class="prettyprint"><span class="pln">                             
+                            unzip master.zip
+                             </span></pre>
+                                <br>第四步：nano编辑器
+                                <pre class="prettyprint"><span class="pln">                             
+                            nano /root/mjpg-streamer-master/mjpg-streamer-experimental/plugins/input_raspicam/input_raspicam.c
+                             </span></pre>
+                                <br>ctrl+w（搜索），输入fps，回车，按下图修改fps，width，height 保存退出
+                                <br><img src="../../../../static/picture/mjpg_2.jpg" style="height: 350px;width: 450px;">
+                                <br>第五步：执行make脚本
+                                <pre class="prettyprint"><span class="pln">
+                             cd ../../
+                             make all
+                             </span></pre>
+                                <br>第六步：生成启动脚本
+                                <pre class="prettyprint"><span class="pln">
+                             cd
+                             nano jk.sh
+                             </span></pre>
+                                <br>将下面两行复制进去
+                                <pre class="prettyprint"><span class="pln">
+                             cd /root/mjpg-streamer-master/mjpg-streamer-experimental
+                             ./mjpg_streamer -i "./input_raspicam.so" -o "./output_http.so -w ./www"
+                             </span></pre>
+                             <br>给脚本写权限
+                             <pre class="prettyprint"><span class="pln">
+                             chmod 744 jk.sh
+                             </span></pre>
+                                <br>最后一步：启动mjpg
+                                <pre class="prettyprint"><span class="pln">
+                             sh jk.sh
+                             </span></pre>
+                            </p>
+                            <p>
+                                接下来就是见证奇迹的时刻-在浏览器地址栏输入 http://你的树莓派ip:8080 就会看见下图
+                                <br><img src="../../../../static/picture/mjpg_4.png" style="height: 350px;width: 450px;">
+                                <br>点击左侧steam ，就可以看见流畅的不像话的视频.
+                            </p>
+                            <p>
+                            	中间呢还遇到了一些问题，记录下来。当忘记关闭时，且ssh已断，那么当你再次启动脚本是会报错.Bind:Address already in use,如下图.
+                                <br><img src="../../../../static/picture/mjpg_5.png" style="height: 350px;width: 450px;">
+                                <br>这个时候我们输入 ps -aux ,查看占用端口的进程.然后 kill 对应的pid
+                            </p>
+                            <p>
+                                最后附上原文地址：<a href="http://tieba.baidu.com/p/3981484977">http://tieba.baidu.com/p/3981484977</a>
+                            </p>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="pull-left copyright">Copyright &copy; 2016&nbsp;&nbsp;<a href='/'>强哥的小窝</a></div>
+                <ul class="footer-nav pull-right">
+                    <li><a href="https://www.zhihu.com/people/xiao-xiao-qiang-3" target="_blank" class="icon-zhihu" title="知乎">知乎</a></li>
+                    <li><a href="http://weibo.com/2502029140" target="_blank" class="icon-weibo" title="微博">微博</a></li>
+                    <li><a href="https://github.com/sikuquanshu123" target="_blank" class="icon-github" title="Github">Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -2,9 +2,9 @@ from flask import Flask, request,render_template,redirect, url_for, abort, sessi
 from flask.ext.admin import Admin, BaseView, expose
 app = Flask(__name__)
 
-@app.route("/")
+"""
 def welcome():
-    return render_template('welcome.html')
+    return render_template('/home/home.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -21,7 +21,8 @@ def login():
     else:
         return render_template('login.html')
 
-    
+"""
+@app.route("/")
 @app.route("/home")
 def home():
     return render_template('/home/home.html')
@@ -102,6 +103,9 @@ def raspberry():
 def qian():
     return render_template('/row/2017/02/14/qian.html')
 
+@app.route("/row/2017/02/20/mjpg")
+def mjpg():
+    return render_template('/row/2017/02/20/mjpg.html')
 """
 @app.route("/generate_204")
 def generate_204():
