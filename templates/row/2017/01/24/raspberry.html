@@ -63,7 +63,7 @@
                             </p>
 
                             <h2>pi的基本介绍</h2>
-                            <img src="../../../../static/picture/raspberry_1.jpg" style="height: 350px;width: 450px;">
+                            <!--<img src="../../../../static/picture/raspberry_1.jpg" style="height: 350px;width: 450px;">-->
                             <p>
                             	一个树莓派启动所必须的配件包括：一个8G的TF卡用于装系统、一个5V2.5A的电源、再加一个亚克力外壳，最好再配个散热片，亲测加上散热片日常开机运行不会超过55°。
                             </p>
@@ -81,11 +81,11 @@
 
                             <img src="../../../../static/picture/raspberry_4.jpg" style="height: 350px;width: 450px;">
                             	<p>
-                            		将镜像下载下来之后，使用官方推荐的Win32DiskImager <a href="http://download.csdn.net/detail/sikuquanshu123/9757413">（下载链接）</a> 刻到sd卡。然后插上电源等待开机。接下来，找到一根网线，连接到路由器，从路由器的管理界面获取到pi的ip。
+                            		将镜像下载下来之后，使用官方推荐的Win32DiskImager <a href="../../../../static/res/Win32DiskImager-0.9.5-install.exe">（下载链接）</a> 刻到sd卡。然后插上电源等待开机。接下来，找到一根网线，连接到路由器，从路由器的管理界面获取到pi的ip。
                             	</p>
 
                             	<p>
-                            		接着打开PuTTY<a href="http://download.csdn.net/detail/sikuquanshu123/9757414">（下载链接）</a> ，输入ip，端口填22，选ssh，确认进入。（对了，新版jessie是默认关闭ssh的，所以如果连接不上pi，那么拔掉电源，给pi的sd卡上新建一个名为SSH没有后缀的文件）。
+                            		接着打开PuTTY<a href="../../../../static/res/putty-0.67-installer.msi">（下载链接）</a> ，输入ip，端口填22，选ssh，确认进入。（对了，新版jessie是默认关闭ssh的，所以如果连接不上pi，那么拔掉电源，给pi的sd卡上新建一个名为SSH没有后缀的文件）。
                             	</p>
                             	<p>
                             		ok,连接上以后树莓派的默认用户名是pi，密码是raspberry。登录上以后，首先我们得先更改软件源，官方的源慢的跟蜗牛一样。
@@ -110,7 +110,9 @@ sudo nano /etc/wpa_supplicant/wpa_supplicant.conf //修改wifi配置
 
 network={  
     ssid="XXXX"  
-    psk="XXXX"  
+    psk="XXXX" 
+    scan_ssid=1 如果连接的wifi是隐藏的，就得写上这个
+
 } 
 //添加wifi的用户名和密码
                              </span></pre>  
@@ -209,7 +211,7 @@ if __name__ == '__main__':
 crontab -e
 
 00 06 * * * python3 /root/weather/weather.py
-01 06 * * * mplayer /root/weather/morning.mp3 1.mp3
+01 06 * * * mplayer /root/weather/morning.mp3 /root/weather/1.mp3
 03 06 * * * mplayer -shuffle /root/Misic/*.mp3
 30 06 * * * pkill mplayer
 
